@@ -112,7 +112,11 @@ Or, use the convenient script provided:
 Complete Reference for [N1QL Query Language](https://docs.couchbase.com/server/4.0/n1ql/n1ql-language-reference/index.html).
 
 1. From the main menu, select `Query` to open the `Query Editor`
-2. Example Queries:
+2. Experiment with the sample Queries below:
+
+#### CRUD Operations
+
+Create, Read, Update, and Delete operation experiments.
 
 ```SQL
 SELECT * FROM `travel-sample` LIMIT 10;
@@ -140,15 +144,58 @@ SELECT COUNT(name) FROM `travel-sample` WHERE type == 'airline';
 Let's pick an airline to delete:
 
 ```SQL
-SELECT name, id FROM `travel-sample` WHERE type == 'airline';
+SELECT name, id, META().id as document_key FROM `travel-sample` WHERE type == 'airline';
 ```
 
-ok... 40-Mile Air... lets delete it
+*NOTE: META().id above, is used to get the key that the document was inserted under*
+
+
+ok... Locair... lets delete it
 
 ```SQL
-DELETE FROM `travel-sample` WHERE type == 'airline' AND name == '40-Mile Air' RETURNING *
+DELETE FROM `travel-sample` WHERE type == 'airline' AND name == 'Locair' RETURNING *, META().id as document_key;
 ```
 
-redo the name, id query from above to confirm deletion
-Now, lets add it back in...
-TODO
+Lets insert the airline back into the database
+
+```SQL
+INSERT INTO `travel-sample` (KEY, VALUE)
+VALUES(
+    "airline_10748",
+    {  "callsign": "LOCAIR",
+      "country": "United States",
+      "iata": "ZQ",
+      "icao": "LOC",
+      "id": 10748,
+      "name": "Locair",
+      "type": "airline"
+    }
+) RETURNING META().id as document_key, *;
+```
+
+now, let's update LOCAIR country... say... they moved their corporate headquarters
+
+```SQL
+UPSERT INTO `travel-sample` (KEY, VALUE)
+VALUES(
+    "airline_10748",
+    {  "callsign": "LOCAIR",
+      "country": "Australia",
+      "iata": "ZQ",
+      "icao": "LOC",
+      "id": 10748,
+      "name": "Locair",
+      "type": "airline"
+    }
+) RETURNING META().id as document_key, *;
+```
+
+now, we'll change all airlines with country = Australia to AU.... because...
+
+```SQL
+UPDATE `travel-sample`
+SET country = "AU"
+WHERE type = "airline"
+AND country = "Australia"
+RETURNING META().id as document_key, *;
+```

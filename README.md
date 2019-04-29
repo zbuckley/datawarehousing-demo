@@ -168,7 +168,7 @@ DELETE FROM `travel-sample` WHERE type == 'airline' AND name == 'Locair' RETURNI
 ```
 
 Using the primary Key query above, lets verify that the document is no longer in no longer in the database.
-*NOTE: While the query below does work, according to the [N1QL Docs](https://docs.couchbase.com/server/4.1/developer-guide/retrieving.html), it is typically recommended to use the key-value api when the key is known*
+NOTE: While the query below does work, according to the [N1QL Docs](https://docs.couchbase.com/server/4.1/developer-guide/retrieving.html), it is typically recommended to use the key-value api when the key is known
 
 ```SQL
 SELECT * FROM `travel-sample` WHERE META().id = "airline_10748";

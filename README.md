@@ -241,3 +241,7 @@ using our *Read* operation from above, shows Locair being updated.
 ```SQL
 SELECT * FROM `travel-sample` WHERE META().id = "airline_10748";
 ```
+
+Highly recommend reviewing stats and metrics to see the effect of the operations above,
+on the database performance. The metrics and monitoring available out of the box (so to speak),
+are great tools.
